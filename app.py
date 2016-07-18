@@ -6,23 +6,32 @@ from flask import (
     abort, render_template, flash
 )
 
+#create the application 
 app = Flask(__name__)
+
+#call config option from config.py
 app.config.from_object('config')
 
+#Connects to the database
 def connect_db():
     return sqlite3.connect(app.config['DATABASE'])
 
-
+#Connect to the database before the request
 @app.before_request
 def before_request():
     g.db = connect_db()
 
+#Closes the database at the end of the request.
 @app.teardown_request
 def teardown_request(exception):
     db = getattr(g, 'db', None)
     if db is not None:
         db.close()
 
+'''
+VIEWS
+
+'''
 
 @app.route('/')
 def show_entries():
